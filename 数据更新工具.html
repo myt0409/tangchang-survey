@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>数据更新工具</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>body{font-family:Arial,"Microsoft YaHei";background:#f4f7fb;margin:0;padding:30px}.box{max-width:760px;margin:auto;background:#fff;padding:28px;border-radius:16px;box-shadow:0 8px 30px #0001}button{padding:11px 16px;border:0;border-radius:8px;background:#1677ff;color:#fff;cursor:pointer;margin-right:8px}input{margin:12px 0 18px}.note{color:#667085;line-height:1.7}</style></head>
+<body><div class="box"><h1>调查结果数据更新工具</h1>
+<p class="note">上传新的 Excel 后，本工具会读取工作表“20份完整问卷答案”，并生成一份新的 index.html。此工具只在你的浏览器本地处理文件，不会主动上传 Excel。</p>
+<input id="file" type="file" accept=".xlsx,.xls"><br><button id="go">生成新版展示页</button>
+<p id="msg" class="note"></p></div>
+<script>
+document.getElementById('go').onclick=async()=>{
+ const f=document.getElementById('file').files[0]; if(!f){msg.textContent='请先选择Excel文件。';return}
+ msg.textContent='正在读取……';
+ const buf=await f.arrayBuffer(), wb=XLSX.read(buf,{type:'array'}); const ws=wb.Sheets['20份完整问卷答案'];
+ if(!ws){msg.textContent='找不到“20份完整问卷答案”工作表。';return}
+ const data=XLSX.utils.sheet_to_json(ws,{defval:null});
+ const base=await fetch('index.html').then(r=>r.text());
+ const replaced=base.replace(/const DATA = .*?;\nconst PROFILES = .*?;/s, 'const DATA = '+JSON.stringify(data)+';\\nconst PROFILES = [];');
+ const blob=new Blob([replaced],{type:'text/html;charset=utf-8'}), a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='index.html'; a.click();
+ msg.textContent='已生成新版 index.html。将它替换到你的网页托管空间即可更新展示数据。';
+};
+</script></body></html>

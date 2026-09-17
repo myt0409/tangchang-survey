@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>调查结果二维码生成</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+body{font-family:"Microsoft YaHei",Arial;background:#f4f7fb;margin:0;padding:30px}.box{max-width:620px;margin:auto;background:#fff;padding:28px;border-radius:16px;box-shadow:0 8px 30px #0001;text-align:center}
+input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:15px;box-sizing:border-box;margin:10px 0 15px}
+button{padding:11px 18px;border:0;border-radius:8px;background:#1677ff;color:#fff;cursor:pointer}#qr{margin:22px auto;width:260px;min-height:20px}p{color:#667085;line-height:1.7;font-size:13px}
+</style></head><body><div class="box">
+<h1>调查结果二维码</h1>
+<p>先把 <b>index.html</b> 部署到公开 HTTPS 地址，再把完整网址粘贴到下面。</p>
+<input id="url" placeholder="例如：https://你的域名/">
+<button onclick="make()">生成二维码</button>
+<div id="qr"></div>
+<p>二维码指向的是你填写的公开网址；本页面不会上传你的 Excel 数据。</p>
+</div>
+<script>
+function make(){
+ const u=document.getElementById('url').value.trim(), box=document.getElementById('qr');
+ if(!/^https?:\/\//i.test(u)){box.innerHTML='<p>请输入以 http:// 或 https:// 开头的网址。</p>';return}
+ box.innerHTML=''; new QRCode(box,{text:u,width:260,height:260});
+}
+</script></body></html>
