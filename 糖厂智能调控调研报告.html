@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>糖厂全流程智能调控升级改造调研报告</title>
+<link rel="preconnect" href="https://miaoda.feishu.cn">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23121c31'/%3E%3Cpath d='M8 22c2.5 4 5 2 6-3 .8-4 3-7 6-7 3.5 0 4 4 4 6' stroke='%23e9b55f' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='20.5' cy='9' r='1.9' fill='%233fd6c2'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0b1526;
+  --bg2:#0f1c33;
+  --panel:#12233d;
+  --panel2:#162a49;
+  --line:rgba(122,154,205,.16);
+  --ink:#eaf0fb;
+  --muted:#8fa4c4;
+  --gold:#e9b55f;
+  --teal:#3fd6c2;
+  --blue:#6ba1ff;
+  --rose:#f27c6f;
+  --lime:#b6d95a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Noto Sans SC",system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+section{padding:64px 0 8px;position:relative}
+.bg-deco{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+   radial-gradient(900px 500px at 85% -10%, rgba(63,214,194,.10), transparent 60%),
+   radial-gradient(800px 520px at -10% 30%, rgba(233,181,95,.08), transparent 55%),
+   linear-gradient(180deg,#0b1526 0%,#0a1322 100%);
+}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:26px}
+.sec-no{font-family:"Noto Serif SC",serif;font-weight:700;font-size:14px;color:var(--gold);letter-spacing:.08em}
+.sec-title{font-family:"Noto Serif SC",serif;font-weight:700;font-size:26px;letter-spacing:.02em}
+.sec-sub{color:var(--muted);font-size:14px;margin-top:2px}
+hr.rule{border:0;height:1px;background:linear-gradient(90deg,var(--line),transparent);margin:8px 0 0}
+
+/* ===== Hero ===== */
+.hero{padding:84px 0 34px;position:relative;overflow:hidden}
+.hero .kicker{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--teal);
+  border:1px solid rgba(63,214,194,.35);padding:6px 14px;border-radius:100px;letter-spacing:.12em;background:rgba(63,214,194,.06)}
+.hero .kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.hero h1{font-family:"Noto Serif SC",serif;font-weight:900;font-size:44px;line-height:1.22;margin:22px 0 16px;letter-spacing:.01em}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero .lede{color:var(--muted);font-size:16px;max-width:760px}
+.hero .lede b{color:var(--ink);font-weight:600}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:38px}
+.kpi{background:linear-gradient(160deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:20px 20px 16px}
+.kpi .num{font-family:"Noto Serif SC",serif;font-weight:900;font-size:38px;color:var(--gold);line-height:1}
+.kpi .num small{font-size:19px;color:var(--teal)}
+.kpi .cap{color:var(--muted);font-size:13px;margin-top:8px}
+.kpi .cap b{color:var(--ink)}
+
+/* ===== Cards & grids ===== */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 20px}
+.panel h3{font-family:"Noto Serif SC",serif;font-size:17px;font-weight:700;margin-bottom:4px}
+.panel .hint{color:var(--muted);font-size:12.5px;margin-bottom:12px}
+.chart{width:100%;height:320px}
+.chart-sm{height:260px}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:8px 0 4px}
+.fnode{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;position:relative}
+.fnode .fid{display:inline-block;font-size:10.5px;color:var(--bg);background:var(--gold);border-radius:6px;padding:1px 7px;font-weight:700;letter-spacing:.04em}
+.fnode .fname{font-size:13.5px;font-weight:600;margin-top:7px}
+.fnode .fval{font-size:11px;color:var(--muted);margin-top:2px}
+.farrow{align-self:center;color:var(--teal);font-size:16px;text-align:center}
+.seg-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.seg-tab{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:100px;padding:7px 16px;font-size:13px;cursor:pointer;transition:.18s}
+.seg-tab:hover{color:var(--ink)}
+.seg-tab.on{background:var(--gold);color:#1b1408;border-color:var(--gold);font-weight:600}
+
+/* stat rows */
+.statrow{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.statrow:last-child{border-bottom:0}
+.statrow .k{color:var(--muted)}
+.statrow .v{font-weight:600;white-space:nowrap}
+.statrow .v.hl{color:var(--gold)}
+
+.tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{border:1px solid rgba(63,214,194,.3);color:var(--teal);background:rgba(63,214,194,.06);border-radius:8px;padding:4px 10px;font-size:12.5px}
+.tag.gold{border-color:rgba(233,181,95,.35);color:var(--gold);background:rgba(233,181,95,.06)}
+
+.note{margin-top:26px;background:rgba(63,214,194,.05);border:1px solid rgba(63,214,194,.18);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--muted)}
+.note b{color:var(--teal)}
+
+footer{padding:50px 0 60px;color:var(--muted);font-size:13px}
+footer .rule{margin-bottom:22px}
+.foot-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.foot-grid h4{color:var(--ink);font-size:14px;margin-bottom:6px;font-family:"Noto Serif SC",serif}
+
+/* ===== Meters ===== */
+.meter-wrap{margin-top:18px}
+.meter{height:12px;border-radius:100px;background:rgba(255,255,255,.08);overflow:hidden}
+.meter::after{content:"";display:block;height:100%;width:var(--w);border-radius:100px;
+  background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 1s ease}
+.meter-num{font-family:"Noto Serif SC",serif;font-weight:900;font-size:30px;color:var(--gold);margin-top:10px}
+.meter-num small{font-size:15px;color:var(--teal)}
+.meter-cap{color:var(--muted);font-size:12px;margin-top:2px}
+
+/* ===== Responsive ===== */
+@media (max-width:1020px){
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .flow{grid-template-columns:repeat(3,1fr)}
+  .farrow{display:none}
+}
+@media (max-width:640px){
+  .hero{padding:56px 0 22px}
+  .hero h1{font-size:30px}
+  .kpi-strip{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi .num{font-size:30px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  section{padding:46px 0 6px}
+  .sec-title{font-size:21px}
+  .foot-grid{grid-template-columns:1fr}
+  .chart{height:290px}
+}
+</style>
+</head>
+<body>
+<div class="bg-deco" aria-hidden="true"></div>
+
+<!-- ===== Hero ===== -->
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker"><span class="dot"></span>智能化改造 · 行业调研</span>
+    <h1>糖厂全流程智能调控<br>升级改造<em>调研报告</em></h1>
+    <p class="lede">基于全国 <b>33 家糖厂</b>、<b>900 份</b>有效问卷，覆盖从入料预处理到分蜜包装的七大工段，系统呈现制糖行业自动化现状、工艺痛点、改造诉求与人才需求，为智能调控升级提供数据依据。</p>
+    <div class="kpi-strip">
+      <div class="kpi"><div class="num">900<small> 份</small></div><div class="cap">有效调查问卷</div></div>
+      <div class="kpi"><div class="num">33<small> 家</small></div><div class="cap">样本糖厂</div></div>
+      <div class="kpi"><div class="num">7<small> 大</small></div><div class="cap">全流程工艺工段</div></div>
+      <div class="kpi"><div class="num">107<small> 项</small></div><div class="cap">问卷指标字段</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== 01 样本与画像 ===== -->
+<section id="s1">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">01</span><div>
+      <h2 class="sec-title">样本构成与企业画像</h2>
+      <div class="sec-sub">样本覆盖三种企业性质、四种生产规模与四档自动化水平，均衡性良好</div>
+    </div></div>
+    <hr class="rule">
+    <div class="grid g4" style="margin-top:22px">
+      <div class="panel"><h3>企业性质</h3><div class="hint">按问卷份数统计</div><div id="ch-nature" class="chart-sm"></div></div>
+      <div class="panel"><h3>生产规模（日榨甘蔗）</h3><div class="hint">按问卷份数统计</div><div id="ch-scale" class="chart-sm"></div></div>
+      <div class="panel"><h3>现有自动化整体水平</h3><div class="hint">四档水平分布</div><div id="ch-auto" class="chart-sm"></div></div>
+      <div class="panel"><h3>改造积极度</h3><div class="hint">0–1，按企业性质均值</div><div id="ch-enthu" class="chart-sm"></div></div>
+    </div>
+    <div class="note"><b>关键发现：</b>超六成样本（<b id="k-auto-low" style="color:var(--gold)">—</b>%）自动化整体水平停留在「局部自动化 / 基础仪表级」，数据孤岛与人工操作为主；其中民营企业改造积极度相对偏低（0.56），是后续推广的重点对象。</div>
+  </div>
+</section>
+
+<!-- ===== 02 工段现状与痛点 ===== -->
+<section id="s2">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">02</span><div>
+      <h2 class="sec-title">全流程工段现状与工艺痛点</h2>
+      <div class="sec-sub">点击工段切换查看自动化程度分布、问题严重度排序与核心诉求关键词</div>
+    </div></div>
+    <hr class="rule">
+    <div class="seg-tabs" id="segTabs">
+      <button class="seg-tab on" data-seg="S1" onclick="switchSeg('S1')">S1 入料预处理</button>
+      <button class="seg-tab" data-seg="S2" onclick="switchSeg('S2')">S2 提汁压榨</button>
+      <button class="seg-tab" data-seg="S3" onclick="switchSeg('S3')">S3 澄清中和</button>
+      <button class="seg-tab" data-seg="S4" onclick="switchSeg('S4')">S4 蒸发</button>
+      <button class="seg-tab" data-seg="S5" onclick="switchSeg('S5')">S5 结晶煮糖</button>
+      <button class="seg-tab" data-seg="S6" onclick="switchSeg('S6')">S6 分蜜干燥包装</button>
+    </div>
+    <div class="grid g3" style="margin-top:8px">
+      <div class="panel"><h3 id="segName1">S1 入料预处理 · 自动化程度</h3><div id="ch-seg-auto" class="chart"></div></div>
+      <div class="panel"><h3 id="segName2">问题严重程度 TOP</h3><div class="hint">1–5 分严重度均值</div><div id="ch-seg-prob" class="chart"></div></div>
+      <div class="panel"><h3 id="segName3">核心诉求关键词</h3><div class="hint">最需解决问题中出现频次</div><div id="ch-seg-kw" class="chart"></div></div>
+    </div>
+    <div class="flow" style="margin-top:20px">
+      <div class="fnode"><span class="fid">S1</span><div class="fname">入料预处理</div><div class="fval" data-avg="S1"></div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><span class="fid">S2</span><div class="fname">提汁压榨</div><div class="fval" data-avg="S2"></div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><span class="fid">S3</span><div class="fname">澄清中和</div><div class="fval" data-avg="S3"></div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><span class="fid">S4</span><div class="fname">蒸发</div><div class="fval" data-avg="S4"></div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><span class="fid">S5</span><div class="fname">结晶煮糖</div><div class="fval" data-avg="S5"></div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><span class="fid">S6</span><div class="fname">分蜜干燥包装</div><div class="fval" data-avg="S6"></div></div>
+    </div>
+    <div class="note"><b>关键发现：</b>六大工段问题严重度高度接近（2.72–2.75），说明痛点<b style="color:var(--gold)">普遍且均衡</b>；S5 煮糖「依赖老工人经验」居首，印证行业共性难题——<b>经验依赖与人员断层</b>。</div>
+  </div>
+</section>
+
+<!-- ===== 03 关键绩效 ===== -->
+<section id="s3">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">03</span><div>
+      <h2 class="sec-title">关键工艺绩效指标</h2>
+      <div class="sec-sub">全样本均值，反映当前制糖工艺基准水平</div>
+    </div></div>
+    <hr class="rule">
+    <div class="grid g4" style="margin-top:22px">
+      <div class="panel"><h3>蔗糖抽出率</h3><div class="chart-sm"><div class="meter-wrap"><div class="meter" id="m-extract" style="--w:0%"></div></div><div class="meter-num" id="n-extract">—</div></div></div>
+      <div class="panel"><h3>清汁纯度</h3><div class="meter-wrap"><div class="meter" id="m-purity" style="--w:0%"></div></div><div class="meter-num" id="n-purity">—</div></div>
+      <div class="panel"><h3>粒度均匀度合格率</h3><div class="meter-wrap"><div class="meter" id="m-grain" style="--w:0%"></div></div><div class="meter-num" id="n-grain">—</div></div>
+      <div class="panel"><h3>甲糖煮糖周期</h3><div class="meter-wrap"><div class="meter" id="m-cycle" style="--w:0%"></div></div><div class="meter-num" id="n-cycle">—</div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="panel"><h3>工段均值 vs 规模对比</h3><div class="hint">按生产规模分组的自动化水平构成</div><div id="ch-perf"></div></div>
+      <div class="panel"><h3>人员结构与技术占比</h3><div class="hint">平均全厂一线 / 技术运维人员</div><div id="ch-people"></div></div>
+    </div>
+    <div class="note"><b>关键发现：</b>平均蔗糖抽出率 <b id="k-extract" style="color:var(--gold)">—</b>%、清汁纯度 <b id="k-purity" style="color:var(--gold)">—</b>%、粒度均匀度合格率 <b id="k-grain" style="color:var(--gold)">—</b>%，仍有可观的工艺优化与质量提升空间。</div>
+  </div>
+</section>
+<!-- ===== 04 改造方向 ===== -->
+<section id="s4">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">04</span><div>
+      <h2 class="sec-title">改造方向与需求</h2>
+      <div class="sec-sub">优先级加权计分、优先升级工段、适用技术与核心诉求</div>
+    </div></div>
+    <hr class="rule">
+    <div class="grid g2" style="margin-top:22px">
+      <div class="panel"><h3>改造优先解决问题</h3><div class="hint">按第一/二/三优先级 3:2:1 加权</div><div id="ch-prio" class="chart"></div></div>
+      <div class="panel"><h3>希望优先升级的工段</h3><div class="hint">提及频次</div><div id="ch-upgrade" class="chart"></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="panel"><h3>适合的智能化技术手段</h3><div class="hint">提及频次</div><div id="ch-tech" class="chart"></div></div>
+      <div class="panel"><h3>对智能化改造的核心诉求</h3><div class="hint">提及频次</div><div id="ch-demand" class="chart"></div></div>
+    </div>
+    <div class="note"><b>关键发现：</b>「关键工艺参数<b style="color:var(--gold)">在线监测与自动闭环</b>」居改造优先级之首，技术手段上<b>先进过程控制（APC）与工艺优化算法</b>呼声最高；压榨提汁、公用工程、澄清中和是最优先升级的三类工段。</div>
+  </div>
+</section>
+
+<!-- ===== 05 投入与风险 ===== -->
+<section id="s5">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">05</span><div>
+      <h2 class="sec-title">投入预算与改造顾虑</h2>
+      <div class="sec-sub">预算承受区间与推进主要障碍</div>
+    </div></div>
+    <hr class="rule">
+    <div class="grid g2" style="margin-top:22px">
+      <div class="panel"><h3>预计可投入改造预算</h3><div class="hint">按问卷份数统计</div><div id="ch-budget" class="chart"></div></div>
+      <div class="panel"><h3>智能化改造主要顾虑</h3><div class="hint">提及频次</div><div id="ch-worry" class="chart"></div></div>
+    </div>
+    <div class="note"><b>关键发现：</b>预算中枢落在 <b id="k-budget" style="color:var(--gold)">200–500 万元</b>区间；主要顾虑高度集中于<b style="color:var(--gold)">技术成熟度、数据安全、专业团队与员工能力</b>——「人的能力」比「资金」更突出。</div>
+  </div>
+</section>
+
+<!-- ===== 06 能源与运维 ===== -->
+<section id="s6">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">06</span><div>
+      <h2 class="sec-title">公用工程、能耗与设备运维</h2>
+      <div class="sec-sub">锅炉汽轮机、水处理能耗管理及运维方式现状</div>
+    </div></div>
+    <hr class="rule">
+    <div class="grid g2" style="margin-top:22px">
+      <div class="panel"><h3>锅炉 / 汽轮机主要问题</h3><div class="hint">提及频次</div><div id="ch-boiler" class="chart"></div></div>
+      <div class="panel"><h3>水处理与能耗管理问题</h3><div class="hint">提及频次</div><div id="ch-water" class="chart"></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="panel"><h3>设备运维管理现状</h3><div class="hint">四种运维方式占比</div><div id="ch-maint" class="chart-sm"></div></div>
+      <div class="panel"><h3>能源与运维要点</h3>
+        <div class="statrow"><span class="k">水处理「异常能耗无法及时发现」</span><span class="v hl" id="k-water1">—</span></div>
+        <div class="statrow"><span class="k">水处理「缺乏能耗数据分析」</span><span class="v hl" id="k-water2">—</span></div>
+        <div class="statrow"><span class="k">锅炉「蒸汽压力波动大」</span><span class="v" id="k-boiler1">—</span></div>
+        <div class="statrow"><span class="k">锅炉「能耗高、热效率低」</span><span class="v" id="k-boiler2">—</span></div>
+        <div class="tagrow" style="margin-top:14px">
+          <span class="tag">能耗计量精细化管理</span><span class="tag">水耗回用优化</span><span class="tag">预测性维护</span>
+        </div>
+      </div>
+    </div>
+    <div class="note"><b>关键发现：</b>水处理与能耗是全场最大共性问题——「异常能耗无法及时发现」与「缺乏能耗数据分析」提及均超 <b style="color:var(--gold)">700 次</b>；设备运维正向状态监测与预测性维护演进，但仍有约四分之一停留在事后维修。</div>
+  </div>
+</section>
+
+<!-- ===== 07 人才与校企合作 ===== -->
+<section id="s7">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">07</span><div>
+      <h2 class="sec-title">人才需求与校企合作</h2>
+      <div class="sec-sub">校企合作意愿评分、合作模式、急需岗位与培训方向</div>
+    </div></div>
+    <hr class="rule">
+    <div class="grid g2" style="margin-top:22px">
+      <div class="panel"><h3>校企合作需求评分</h3><div class="hint">1–5 分需求均值，按降序</div><div id="ch-coop" class="chart"></div></div>
+      <div class="panel"><h3>最希望开展的校企合作模式</h3><div class="hint">提及频次</div><div id="ch-coopmode" class="chart"></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="panel"><h3>急需岗位类型</h3><div class="hint">提及频次</div><div id="ch-job" class="chart"></div></div>
+      <div class="panel"><h3>培训方向与形式</h3><div class="hint">左：培训方向 · 右：期望形式</div><div id="ch-train" class="chart"></div></div>
+    </div>
+    <div class="note"><b>关键发现：</b>约 <b id="k-coop" style="color:var(--gold)">—</b>% 的样本已开展校企合作；「联合申报科技与技改资金」「生产数据分析与可视化」是需求最高的合作方向，人才缺口集中于自动化工程师与智能控制系统运维。</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="rule"></div>
+    <div class="foot-grid">
+      <div>
+        <h4>数据说明</h4>
+        <p>本报告数据来自《糖厂全流程智能调控升级改造调研问卷》：33 家糖厂共 900 份有效样本（9 家每家 28 份、24 家每家 27 份），覆盖国有及国有控股、民营、中外合资三种性质，2000 吨以下至 8000 吨以上四种规模。企业名均为代号，未使用真实企业名称。</p>
+      </div>
+      <div>
+        <h4>指标口径</h4>
+        <p>问题严重程度与校企合作需求采用 1–5 分量表（1=无/很低，5=非常严重/迫切）；多选题以分号分隔统计；改造优先级按第一 / 第二 / 第三优先级 3:2:1 加权计分。</p>
+      </div>
+    </div>
+    <p style="margin-top:18px;opacity:.7">糖厂全流程智能调控升级改造调研报告 · 样本数据为演示用，仅供学习与决策参考。</p>
+  </div>
+</footer>
+
+<!-- ===== 数据与图表渲染 ===== -->
+<script src="assets/echarts.min.js"></script>
+<script>
+const DATA = {"total": 900, "enterprises": 33, "nature_dist": [{"name": "国有及国有控股", "value": 356}, {"name": "民营", "value": 355}, {"name": "中外合资", "value": 189}], "scale_dist": [{"name": "8000吨以上", "value": 245}, {"name": "5000-8000吨", "value": 274}, {"name": "2000-5000吨", "value": 246}, {"name": "2000吨以下", "value": 135}], "auto_dist": [{"name": "数字化集成（有MES/ERP系统，全流程数据贯通）", "value": 191}, {"name": "全线自动化（各工段DCS/PLC控制，未完全打通）", "value": 164}, {"name": "局部自动化（部分工段PLC控制，数据孤岛）", "value": 301}, {"name": "基础仪表级（仅关键参数显示，人工操作）", "value": 244}], "enthusiasm_by_nature": [{"name": "国有及国有控股", "value": 0.62}, {"name": "民营", "value": 0.56}, {"name": "中外合资", "value": 0.6}], "segment_auto": {"S1": [{"name": "自动化（联动控制）", "value": 201}, {"name": "半自动化（单机参数独立控制）", "value": 241}, {"name": "全人工操作", "value": 230}, {"name": "半自动化（关键设备单机控制）", "value": 228}], "S2": [{"name": "半自动化（单机参数独立控制）", "value": 336}, {"name": "自动化（压榨机组联动）", "value": 280}, {"name": "全人工操作", "value": 284}], "S3": [{"name": "全人工操作", "value": 315}, {"name": "半自动化（pH等关键参数在线监测，人工调阀）", "value": 286}, {"name": "自动化（加灰、加硫自动控制）", "value": 299}], "S4": [{"name": "人工操作阀门", "value": 196}, {"name": "智能优化控制", "value": 229}, {"name": "单效自动控制", "value": 232}, {"name": "多效蒸发联动控制", "value": 243}], "S5": [{"name": "智能煮糖系统（AI优化）", "value": 314}, {"name": "半自动（参数显示，人工操作）", "value": 313}, {"name": "全人工煮糖（依赖师傅经验）", "value": 273}], "S6": [{"name": "智能包装仓储", "value": 315}, {"name": "半自动化", "value": 311}, {"name": "人工为主", "value": 274}]}, "segment_problems": {"S1": [{"name": "杂质分拣不彻底", "score": 2.79}, {"name": "设备状态监测不足", "score": 2.77}, {"name": "破碎度不均匀", "score": 2.76}, {"name": "人工巡检强度大", "score": 2.73}, {"name": "输蔗链速度不匹配", "score": 2.72}, {"name": "过磅计量误差", "score": 2.68}], "S2": [{"name": "流量压力匹配", "score": 2.77}, {"name": "跑冒滴漏", "score": 2.75}, {"name": "压榨负荷波动", "score": 2.74}, {"name": "蔗渣水分波动", "score": 2.74}, {"name": "压榨辊磨损监测", "score": 2.72}, {"name": "抽出率不稳定", "score": 2.71}], "S3": [{"name": "滤泥糖损高", "score": 2.74}, {"name": "人工取样滞后", "score": 2.74}, {"name": "pH控制精度低", "score": 2.72}, {"name": "加灰加硫不匹配", "score": 2.72}, {"name": "反应温度不稳", "score": 2.72}, {"name": "沉降浊度波动", "score": 2.7}], "S4": [{"name": "各效液位压力失衡", "score": 2.79}, {"name": "蒸汽能耗高", "score": 2.78}, {"name": "蒸发罐结垢", "score": 2.76}, {"name": "糖浆浓度波动", "score": 2.73}, {"name": "冷凝水回收低", "score": 2.72}, {"name": "转罐依赖人工", "score": 2.7}], "S5": [{"name": "依赖老工人经验", "score": 2.77}, {"name": "晶粒不均匀", "score": 2.75}, {"name": "放糖时机不准", "score": 2.74}, {"name": "物料调度不合理", "score": 2.74}, {"name": "煮糖周期不稳", "score": 2.73}, {"name": "锤度温度真空精度不足", "score": 2.73}, {"name": "煮糖能耗高", "score": 2.72}], "S6": [{"name": "包装计量误差大", "score": 2.8}, {"name": "成品缺陷难发现", "score": 2.76}, {"name": "设备故障率高", "score": 2.73}, {"name": "洗水用量控制不准", "score": 2.71}, {"name": "分蜜水分不稳", "score": 2.7}, {"name": "干燥温湿度精度低", "score": 2.7}]}, "segment_avg": {"S1": 2.74, "S2": 2.74, "S3": 2.72, "S4": 2.75, "S5": 2.74, "S6": 2.73}, "core_keywords": {"S1": [{"name": "智能", "value": 303}, {"name": "状态监测", "value": 303}, {"name": "自动", "value": 294}, {"name": "负荷", "value": 159}, {"name": "优化", "value": 159}, {"name": "除铁", "value": 144}, {"name": "视觉", "value": 144}, {"name": "温度", "value": 144}, {"name": "计量", "value": 138}], "S2": [{"name": "优化", "value": 165}, {"name": "自动", "value": 165}, {"name": "在线检测", "value": 125}, {"name": "水分", "value": 125}, {"name": "负荷", "value": 119}], "S3": [{"name": "自动", "value": 436}, {"name": "优化", "value": 318}, {"name": "在线检测", "value": 285}, {"name": "糖损", "value": 160}, {"name": "浊度", "value": 158}, {"name": "温度", "value": 151}, {"name": "pH", "value": 132}], "S4": [{"name": "回收", "value": 314}, {"name": "优化", "value": 301}, {"name": "自动", "value": 293}, {"name": "能耗", "value": 153}, {"name": "负荷", "value": 149}, {"name": "结垢", "value": 148}, {"name": "周期", "value": 148}, {"name": "在线检测", "value": 144}, {"name": "浓度", "value": 144}], "S5": [{"name": "优化", "value": 397}, {"name": "自动", "value": 261}, {"name": "周期", "value": 141}, {"name": "温度", "value": 137}, {"name": "真空", "value": 137}, {"name": "调度", "value": 137}, {"name": "晶粒", "value": 129}, {"name": "在线检测", "value": 120}, {"name": "能耗", "value": 119}, {"name": "回收", "value": 119}, {"name": "专家", "value": 117}, {"name": "标准化", "value": 117}], "S6": [{"name": "自动", "value": 280}, {"name": "在线检测", "value": 163}, {"name": "水分", "value": 163}, {"name": "优化", "value": 163}, {"name": "状态监测", "value": 152}, {"name": "预测性", "value": 152}, {"name": "视觉", "value": 150}, {"name": "智能", "value": 150}, {"name": "计量", "value": 149}, {"name": "糖损", "value": 131}]}, "priority": {"first": [{"name": "实现关键工艺参数在线监测与自动闭环控制", "value": 111}, {"name": "应对技术工人断层、实现操作经验数字化传承", "value": 104}, {"name": "解决设备老化与故障频发问题", "value": 102}, {"name": "减少一线操作人员、降低劳动强度", "value": 99}, {"name": "减少跑冒滴漏、改善现场作业环境", "value": 91}, {"name": "降低生产成本、提升产品市场竞争力", "value": 86}], "second": [{"name": "降低生产成本、提升产品市场竞争力", "value": 107}, {"name": "提高蔗糖抽出率、降低糖分损失", "value": 100}, {"name": "减少一线操作人员、降低劳动强度", "value": 96}, {"name": "提高产品质量稳定性与色值合格率", "value": 90}, {"name": "降低煮糖及蒸发等关键工段蒸汽能耗", "value": 89}, {"name": "应对技术工人断层、实现操作经验数字化传承", "value": 88}], "third": [{"name": "降低煮糖及蒸发等关键工段蒸汽能耗", "value": 102}, {"name": "提高蔗糖抽出率、降低糖分损失", "value": 93}, {"name": "减少跑冒滴漏、改善现场作业环境", "value": 93}, {"name": "实现全厂数据贯通与生产管理透明化", "value": 92}, {"name": "降低生产成本、提升产品市场竞争力", "value": 92}, {"name": "应对技术工人断层、实现操作经验数字化传承", "value": 88}]}, "priority_weighted": [{"name": "实现关键工艺参数在线监测与自动闭环控制", "value": 584}, {"name": "应对技术工人断层、实现操作经验数字化传承", "value": 576}, {"name": "减少一线操作人员、降低劳动强度", "value": 573}, {"name": "降低生产成本、提升产品市场竞争力", "value": 564}, {"name": "解决设备老化与故障频发问题", "value": 556}, {"name": "提高蔗糖抽出率、降低糖分损失", "value": 548}, {"name": "降低煮糖及蒸发等关键工段蒸汽能耗", "value": 529}, {"name": "减少跑冒滴漏、改善现场作业环境", "value": 524}], "upgrade_segment": [{"name": "压榨提汁", "value": 475}, {"name": "公用工程", "value": 470}, {"name": "澄清中和", "value": 462}, {"name": "入料预处理", "value": 448}, {"name": "分蜜干燥包装", "value": 443}, {"name": "蒸发", "value": 436}, {"name": "全厂数据平台", "value": 418}, {"name": "煮糖结晶", "value": 416}], "tech": [{"name": "先进过程控制（APC）与工艺优化算法", "value": 529}, {"name": "关键工艺参数在线检测与自动闭环控制", "value": 512}, {"name": "产品质量在线检测与追溯系统", "value": 511}, {"name": "能源智能管理与优化系统", "value": 507}, {"name": "设备预测性维护与故障预警系统", "value": 506}, {"name": "AI机器视觉（杂质检测、产品外观检测、液位识别等）", "value": 505}, {"name": "无人巡检机器人/智能巡检系统", "value": 501}, {"name": "全厂生产数据中台与数字孪生可视化", "value": 500}], "demand": [{"name": "规范生产管理流程", "value": 528}, {"name": "减少一线操作人员", "value": 521}, {"name": "实现生产数据透明化", "value": 520}, {"name": "提高出糖率/降低糖损", "value": 511}, {"name": "降低能耗与物耗", "value": 504}, {"name": "降低工人劳动强度", "value": 500}, {"name": "提高产品质量稳定性", "value": 496}, {"name": "提升设备运行可靠性", "value": 468}], "budget": [{"name": "500-1000万元", "value": 169}, {"name": "1000万元以上", "value": 86}, {"name": "200-500万元", "value": 265}, {"name": "100-300万元", "value": 161}, {"name": "50-200万元", "value": 137}, {"name": "暂不确定", "value": 35}, {"name": "50万元以下", "value": 47}], "worry": [{"name": "技术不成熟，效果难保证", "value": 398}, {"name": "数据安全与保密顾虑", "value": 396}, {"name": "缺乏专业技术团队支持", "value": 394}, {"name": "员工技术能力不足，难运维", "value": 391}, {"name": "现有设备不兼容，改造成本大", "value": 390}, {"name": "投入成本高，回报周期长", "value": 365}, {"name": "生产季节性强，利用率低", "value": 362}], "coop": [{"name": "联合申报科技与技改资金", "value": 3.25}, {"name": "生产数据分析与可视化", "value": 3.24}, {"name": "定向培养运维人才", "value": 3.23}, {"name": "设备故障诊断与预测性维护", "value": 3.22}, {"name": "共建实训基地", "value": 3.22}, {"name": "控制系统升级与调试", "value": 3.21}, {"name": "员工智能化技能培训", "value": 3.21}, {"name": "产品检测与工艺试验服务", "value": 3.2}, {"name": "工艺优化算法与模型搭建", "value": 3.18}, {"name": "传感器与智能检测技术", "value": 3.17}], "coop_mode": [{"name": "技术开发合作（校方出技术，企业出场景）", "value": 470}, {"name": "员工技能提升培训", "value": 456}, {"name": "人才订单培养（企业定制，校方培养）", "value": 450}, {"name": "共建实训/研发中心", "value": 442}, {"name": "实习就业基地", "value": 435}, {"name": "委托开发（企业提需求，校方定制开发）", "value": 421}], "job": [{"name": "自动化工程师", "value": 141}, {"name": "智能控制系统运维工", "value": 139}, {"name": "DCS/PLC工程师", "value": 135}, {"name": "仪表维修工", "value": 135}, {"name": "数据分析工程师", "value": 120}, {"name": "电气工程师", "value": 115}, {"name": "设备状态监测技术员", "value": 115}], "train_dir": [{"name": "设备状态监测与故障诊断", "value": 229}, {"name": "智能控制系统操作", "value": 229}, {"name": "数据分析与生产管理", "value": 224}, {"name": "PLC/DCS系统运维", "value": 218}], "train_form": [{"name": "进厂授课", "value": 446}, {"name": "线上学习", "value": 444}, {"name": "校方集中培训", "value": 438}, {"name": "线上线下结合", "value": 431}], "perf": {"抽出率": 93.5, "清汁纯度": 92.56, "粒度均匀度合格率": 93.05, "甲糖煮糖周期": 4.79, "乙糖煮糖周期": 5.49, "成品色值": 143.13, "糖浆锤度目标": 62.01, "锤度波动范围": 3.99, "抽出率波动": 1.72}, "people": {"avg_total": 392, "avg_tech": 75, "tech_ratio": 19.1}, "maintenance": [{"name": "定期预防性维护", "value": 199}, {"name": "事后维修（坏了再修）", "value": 223}, {"name": "状态监测维修", "value": 237}, {"name": "预测性维护", "value": 241}], "boiler": [{"name": "蒸汽压力波动大", "value": 378}, {"name": "能耗高、热效率低", "value": 373}, {"name": "蔗渣燃烧效率不稳定", "value": 192}, {"name": "故障预警能力弱", "value": 187}, {"name": "负荷响应慢，与生产不匹配", "value": 186}, {"name": "锅炉结焦结渣影响换热", "value": 168}, {"name": "汽轮机振动异常缺乏监测", "value": 168}, {"name": "锅炉燃烧不稳定、飞灰含碳量高", "value": 167}], "water": [{"name": "异常能耗无法及时发现", "value": 717}, {"name": "缺乏能耗数据分析", "value": 717}, {"name": "水耗高，回用率低", "value": 442}, {"name": "能耗计量不精细", "value": 216}, {"name": "水处理加药量不准", "value": 183}], "coop_yn": [{"name": "有合作", "value": 844}, {"name": "无合作", "value": 56}], "scale_auto": [{"scale": "2000吨以下", "基础仪表级（仅关键参数显示，人工操作）": 81, "局部自动化（部分工段PLC控制，数据孤岛）": 54, "全线自动化（各工段DCS/PLC控制，未完全打通）": 0, "数字化集成（有MES/ERP系统，全流程数据贯通）": 0}, {"scale": "2000-5000吨", "基础仪表级（仅关键参数显示，人工操作）": 109, "局部自动化（部分工段PLC控制，数据孤岛）": 83, "全线自动化（各工段DCS/PLC控制，未完全打通）": 27, "数字化集成（有MES/ERP系统，全流程数据贯通）": 27}, {"scale": "5000-8000吨", "基础仪表级（仅关键参数显示，人工操作）": 27, "局部自动化（部分工段PLC控制，数据孤岛）": 83, "全线自动化（各工段DCS/PLC控制，未完全打通）": 82, "数字化集成（有MES/ERP系统，全流程数据贯通）": 82}, {"scale": "8000吨以上", "基础仪表级（仅关键参数显示，人工操作）": 27, "局部自动化（部分工段PLC控制，数据孤岛）": 81, "全线自动化（各工段DCS/PLC控制，未完全打通）": 55, "数字化集成（有MES/ERP系统，全流程数据贯通）": 82}]};
+
+const GOLD='#e9b55f', TEAL='#3fd6c2', BLUE='#6ba1ff', ROSE='#f27c6f', LIME='#b6d95a';
+const AXIS='#8fa4c4', SPLIT='rgba(122,154,205,.14)';
+const PALETTE=[GOLD,TEAL,BLUE,ROSE,LIME];
+
+function baseOpt(){
+  return {backgroundColor:'transparent',grid:{left:8,right:18,top:14,bottom:4,containLabel:true},
+    textStyle:{color:AXIS,fontFamily:'"Noto Sans SC",sans-serif'},
+    tooltip:{trigger:'axis',confine:true,backgroundColor:'rgba(15,28,51,.95)',borderColor:'rgba(122,154,205,.3)',
+      textStyle:{color:'#eaf0fb',fontSize:12.5}}};
+}
+function hbar(data,unit){
+  const items=data.slice().reverse();
+  return Object.assign(baseOpt(),{tooltip:{...baseOpt().tooltip,trigger:'item',formatter:p=>`${p.name}<br><b style="color:${GOLD}">${p.value}${unit||''}</b>`},
+    xAxis:{type:'value',axisLabel:{color:AXIS,formatter:'{value}'},splitLine:{lineStyle:{color:SPLIT}}},
+    yAxis:{type:'category',data:items.map(d=>d.name),axisLabel:{color:AXIS,fontSize:12},axisLine:{lineStyle:{color:SPLIT}},axisTick:{show:false}},
+    series:[{type:'bar',data:items.map(d=>d.value),barWidth:'58%',
+      itemStyle:{borderRadius:[0,6,6,0],color:p=>{const c=PALETTE;const i=items.length-1-p.dataIndex;return {type:'linear',x:0,y:0,x2:1,y2:0,colorStops:[{offset:0,color:'rgba(255,255,255,0) '},{offset:1,color:c[i%c.length]}]}}},
+      label:{show:true,position:'right',color:AXIS,fontSize:12,formatter:p=>p.value}}]});
+}
+function donut(data,colors){
+  return Object.assign(baseOpt(),{color:colors||PALETTE,
+    tooltip:{...baseOpt().tooltip,trigger:'item',formatter:p=>`${p.name}<br><b>${p.value}（${p.percent}%）</b>`},
+    series:[{type:'pie',radius:['58%','78%'],center:['50%','48%'],avoidLabelOverlap:true,
+      itemStyle:{borderColor:'#0f1c33',borderWidth:2},
+      label:{color:AXIS,fontSize:12,formatter:'{b}\n{d}%'},
+      labelLine:{length:12,length2:8,lineStyle:{color:SPLIT}},
+      data:data}]});
+}
+function axisPie(data,unit){
+  return Object.assign(baseOpt(),{tooltip:{...baseOpt().tooltip,trigger:'item',formatter:p=>`${p.name}<br><b style="color:${GOLD}">${p.value}${unit||''}</b>`},
+    xAxis:{type:'value',show:false},yAxis:{type:'category',data:data.map(d=>d.name),axisLabel:{color:AXIS,fontSize:12},axisLine:{lineStyle:{color:SPLIT}},axisTick:{show:false}},
+    series:[{type:'pie',radius:['46%','72%'],center:['78%','50%'],avoidLabelOverlap:true,
+      itemStyle:{borderColor:'#0f1c33',borderWidth:2},label:{show:false},labelLine:{show:false},data:data}]});
+}
+const charts={};
+function mk(id){const el=document.getElementById(id);if(!el)return null;const c=echarts.init(el);charts[id]=c;return c;}
+function set(id,opt){const c=mk(id);if(c)c.setOption(opt);}
+
+window.addEventListener('resize',()=>{Object.values(charts).forEach(c=>c.resize());});
+// ===== 01 样本与画像 =====
+const autoLabels=['数字化集成（有MES/ERP系统，全流程数据贯通）','全线自动化（各工段DCS/PLC控制，未完全打通）','局部自动化（部分工段PLC控制，数据孤岛）','基础仪表级（仅关键参数显示，人工操作）'];
+const autoShort=['数字化集成','全线自动化','局部自动化','基础仪表级'];
+const lowAuto = DATA.auto_dist.filter(d=>d.name.includes('局部')||d.name.includes('基础')).reduce((s,d)=>s+d.value,0);
+document.getElementById('k-auto-low').textContent=(lowAuto/DATA.total*100).toFixed(0);
+set('ch-nature', donut(DATA.nature_dist));
+set('ch-scale', donut(DATA.scale_dist, [GOLD,TEAL,BLUE,ROSE]));
+// auto：横向条
+set('ch-auto', hbar(DATA.auto_dist.map(d=>({name:d.name.replace('（有MES/ERP系统，全流程数据贯通）','').replace('（各工段DCS/PLC控制，未完全打通）','').replace('（部分工段PLC控制，数据孤岛）','').replace('（仅关键参数显示，人工操作）',''),value:d.value}))));
+set('ch-enthu', Object.assign(baseOpt(),{tooltip:{...baseOpt().tooltip,trigger:'item',formatter:p=>`${p.name}<br><b style="color:${GOLD}">${p.value}</b>`},
+  xAxis:{type:'value',max:1,axisLabel:{color:AXIS,formatter:v=>(v*100).toFixed(0)+'%'},splitLine:{lineStyle:{color:SPLIT}}},
+  yAxis:{type:'category',data:DATA.enthusiasm_by_nature.map(d=>d.name),axisLabel:{color:AXIS,fontSize:12},axisLine:{lineStyle:{color:SPLIT}},axisTick:{show:false}},
+  series:[{type:'bar',data:DATA.enthusiasm_by_nature.map(d=>d.value),barWidth:'56%',itemStyle:{borderRadius:[0,6,6,0],color:TEAL},
+    label:{show:true,position:'right',color:AXIS,fontSize:12,formatter:p=>(p.value*100).toFixed(0)+'%'}}]}));
+
+// ===== 02 工段现状与痛点 =====
+const SEG_META={S1:'入料预处理',S2:'提汁压榨',S3:'澄清中和',S4:'蒸发',S5:'结晶煮糖',S6:'分蜜干燥包装'};
+let curSeg='S1';
+function segName(s){return `S${s.slice(1)} ${SEG_META[s]}`;}
+function renderSeg(){
+  const seg=curSeg;
+  document.getElementById('segName1').textContent=segName(seg)+' · 自动化程度';
+  document.getElementById('segName2').textContent=segName(seg)+' · 问题严重度 TOP';
+  document.getElementById('segName3').textContent=segName(seg)+' · 核心诉求关键词';
+  set('ch-seg-auto', donut(DATA.segment_auto[seg], PALETTE));
+  set('ch-seg-prob', hbar(DATA.segment_problems[seg]));
+  set('ch-seg-kw', hbar(DATA.core_keywords[seg].slice(0,9)));
+}
+renderSeg();
+function switchSeg(seg){
+  document.querySelectorAll('#segTabs .seg-tab').forEach(x=>x.classList.remove('on'));
+  const btn=document.querySelector('#segTabs .seg-tab[data-seg="'+seg+'"]');
+  if(btn)btn.classList.add('on');
+  curSeg=seg; renderSeg();
+}
+// flow 均值标注
+Object.entries(DATA.segment_avg).forEach(([k,v])=>{
+  const el=document.querySelector(`.fnode .fval[data-avg="${k}"]`);
+  if(el) el.textContent='均值 '+v+' 分';
+});
+
+// ===== 03 关键绩效 =====
+const P=DATA.perf;
+function meter(id,val,unit,max){
+  const el=document.getElementById(id);if(!el)return;
+  setTimeout(()=>{el.style.setProperty('--w',Math.min(100,val/max*100)+'%');},120);
+}
+function mnum(id,text){const el=document.getElementById(id);if(el)el.innerHTML=text;}
+meter('m-extract',P['抽出率'],null,100);mnum('n-extract',P['抽出率'].toFixed(1)+'<small> %</small>');
+meter('m-purity',P['清汁纯度'],null,100);mnum('n-purity',P['清汁纯度'].toFixed(1)+'<small> %</small>');
+meter('m-grain',P['粒度均匀度合格率'],null,100);mnum('n-grain',P['粒度均匀度合格率'].toFixed(1)+'<small> %</small>');
+meter('m-cycle',6.0-P['甲糖煮糖周期'],null,6);mnum('n-cycle',P['甲糖煮糖周期'].toFixed(1)+'<small> h</small>');
+document.getElementById('k-extract').textContent=P['抽出率'].toFixed(1)+'%';
+document.getElementById('k-purity').textContent=P['清汁纯度'].toFixed(1)+'%';
+document.getElementById('k-grain').textContent=P['粒度均匀度合格率'].toFixed(1)+'%';
+// 规模×自动化 堆叠百分比
+(function(){
+  const keys=autoShort;
+  const series=keys.map((k,i)=>({
+    name:k,type:'bar',stack:'t',barWidth:'52%',
+    itemStyle:{color:PALETTE[i],borderRadius:i===0?[6,6,0,0]:0},
+    data:DATA.scale_auto.map(r=>r[autoLabels[i]]||0)
+  }));
+  set('ch-perf', Object.assign(baseOpt(),{tooltip:{...baseOpt().tooltip,trigger:'axis',axisPointer:{type:'shadow'}},
+    legend:{data:keys,textStyle:{color:AXIS,fontSize:11.5},top:0,itemWidth:12,itemHeight:8},
+    xAxis:{type:'category',data:DATA.scale_auto.map(r=>r.scale),axisLabel:{color:AXIS,fontSize:12},axisLine:{lineStyle:{color:SPLIT}}},
+    yAxis:{type:'value',axisLabel:{color:AXIS,formatter:'{value}'},splitLine:{lineStyle:{color:SPLIT}}},
+    series:series}));
+})();
+// 人员
+(function(){
+  const t=DATA.people;
+  set('ch-people', Object.assign(baseOpt(),{
+    tooltip:{...baseOpt().tooltip,trigger:'axis'},
+    legend:{data:['全厂一线','技术/运维'],textStyle:{color:AXIS,fontSize:11.5},top:0,itemWidth:12,itemHeight:8},
+    xAxis:{type:'category',data:['平均每厂'],axisLabel:{color:AXIS,fontSize:12},axisLine:{lineStyle:{color:SPLIT}}},
+    yAxis:{type:'value',axisLabel:{color:AXIS,formatter:'{value}'},splitLine:{lineStyle:{color:SPLIT}}},
+    series:[
+      {name:'全厂一线',type:'bar',barWidth:44,data:[t.avg_total],itemStyle:{borderRadius:[6,6,0,0],color:GOLD},label:{show:true,position:'top',color:AXIS,formatter:p=>p.value+' 人'}},
+      {name:'技术/运维',type:'bar',barWidth:44,data:[t.avg_tech],itemStyle:{borderRadius:[6,6,0,0],color:TEAL},label:{show:true,position:'top',color:AXIS,formatter:p=>p.value+' 人'}}
+    ]}));
+  const ratio=t.tech_ratio.toFixed(1);
+})();
+
+// ===== 04 改造方向 =====
+set('ch-prio', hbar(DATA.priority_weighted));
+set('ch-upgrade', hbar(DATA.upgrade_segment,' 次'));
+set('ch-tech', hbar(DATA.tech,' 次'));
+set('ch-demand', hbar(DATA.demand,' 次'));
+
+// ===== 05 投入与风险 =====
+set('ch-budget', hbar(DATA.budget,' 份'));
+set('ch-worry', hbar(DATA.worry,' 次'));
+const topBudget=DATA.budget.slice().sort((a,b)=>b.value-a.value)[0];
+document.getElementById('k-budget').textContent=topBudget.name;
+
+// ===== 06 能源与运维 =====
+set('ch-boiler', hbar(DATA.boiler,' 次'));
+set('ch-water', hbar(DATA.water,' 次'));
+set('ch-maint', donut(DATA.maintenance, [TEAL,GOLD,BLUE,ROSE]));
+document.getElementById('k-water1').textContent=DATA.water[0].value+' 次';
+document.getElementById('k-water2').textContent=DATA.water[1].value+' 次';
+document.getElementById('k-boiler1').textContent=DATA.boiler[0].value+' 次';
+document.getElementById('k-boiler2').textContent=DATA.boiler[1].value+' 次';
+
+// ===== 07 人才与校企合作 =====
+set('ch-coop', Object.assign(baseOpt(),{tooltip:{...baseOpt().tooltip,trigger:'item',formatter:p=>`${p.name}<br><b style="color:${GOLD}">${p.value} / 5</b>`},
+  xAxis:{type:'value',max:5,axisLabel:{color:AXIS},splitLine:{lineStyle:{color:SPLIT}}},
+  yAxis:{type:'category',data:DATA.coop.slice().reverse().map(d=>d.name),axisLabel:{color:AXIS,fontSize:11.5},axisLine:{lineStyle:{color:SPLIT}},axisTick:{show:false}},
+  series:[{type:'bar',data:DATA.coop.slice().reverse().map(d=>d.value),barWidth:'56%',itemStyle:{borderRadius:[0,5,5,0],color:BLUE},
+    label:{show:true,position:'right',color:AXIS,fontSize:11.5,formatter:p=>p.value.toFixed(2)}}]}));
+set('ch-coopmode', hbar(DATA.coop_mode,' 次'));
+set('ch-job', hbar(DATA.job,' 次'));
+(function(){
+  const dir=DATA.train_dir, form=DATA.train_form;
+  const cats=[...new Set([...dir.map(d=>d.name),...form.map(d=>d.name)])];
+  const dmap=Object.fromEntries(dir.map(d=>[d.name,d.value]));
+  const fmap=Object.fromEntries(form.map(d=>[d.name,d.value]));
+  set('ch-train', Object.assign(baseOpt(),{tooltip:{...baseOpt().tooltip,trigger:'axis',axisPointer:{type:'shadow'}},
+    legend:{data:['培训方向','期望形式'],textStyle:{color:AXIS,fontSize:11.5},top:0,itemWidth:12,itemHeight:8},
+    grid:{left:8,right:18,top:30,bottom:4,containLabel:true},
+    xAxis:{type:'category',data:cats,axisLabel:{color:AXIS,fontSize:10.5,interval:0,rotate:cats.length>4?20:0},axisLine:{lineStyle:{color:SPLIT}}},
+    yAxis:{type:'value',axisLabel:{color:AXIS,formatter:'{value}'},splitLine:{lineStyle:{color:SPLIT}}},
+    series:[
+      {name:'培训方向',type:'bar',barWidth:'34%',data:cats.map(c=>dmap[c]||0),itemStyle:{borderRadius:[4,4,0,0],color:GOLD}},
+      {name:'期望形式',type:'bar',barWidth:'34%',data:cats.map(c=>fmap[c]||0),itemStyle:{borderRadius:[4,4,0,0],color:TEAL}}
+    ]}));
+})();
+const coopYn=DATA.coop_yn.find(d=>d.name==='有合作');
+if(coopYn) document.getElementById('k-coop').textContent=(coopYn.value/DATA.total*100).toFixed(0);
+
+</script>
+</body>
+</html>
